@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Performance Analysis - Phishing URL Detector</title>
+    <title>Performance Analysis - PhisGuard</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     
     <!-- Google Web Fonts -->
@@ -305,17 +305,18 @@
     <nav class="navbar">
         <a href="{{url_for('first')}}" class="navbar-brand">
             <i class="fas fa-shield-alt"></i>
-            <h1>Phishing Detector</h1>
+            <h1>PhisGuard</h1>
         </a>
         <div class="nav-links" id="navLinks">
             <a href="{{url_for('first')}}" class="nav-link">Home</a>
-            {% if session.get('logged_in') %}
+            {% if session.get('user_id') or session.get('logged_in') %}
             <a href="{{url_for('index')}}" class="nav-link">Prediction</a>
             <a href="{{url_for('performance')}}" class="nav-link active">Performance</a>
             <a href="{{url_for('chart')}}" class="nav-link">Chart</a>
             <a href="{{url_for('logout')}}" class="nav-link">Logout</a>
             {% else %}
             <a href="{{url_for('login')}}" class="nav-link">Login</a>
+            <a href="{{url_for('signup')}}" class="nav-link">Sign Up</a>
             {% endif %}
         </div>
         <div class="mobile-menu" onclick="toggleMenu()">

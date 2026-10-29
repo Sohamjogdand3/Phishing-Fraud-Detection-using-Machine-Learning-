@@ -1,96 +1,137 @@
 # Phishing URL Detection Website
 
-A machine learning-based web application that detects whether a URL is legitimate or a phishing attempt.  
-The system analyzes URL features and predicts the likelihood of the URL being malicious using a trained ML model.
+## 1. Prerequisites
 
-## 🚀 Live Demo
-Website Link: https://phishing-detection-f1wa.onrender.com
+- **Python Version**: Python 3.11 (tested on Python 3.11.9; compatible with Python 3.10 and 3.11).
+- **Package Manager**: `pip` (Python package manager).
+- **Operating System**: Windows (or compatible OS).
+- **Gmail Account (Optional)**: A Gmail account with an App Password if email OTP delivery is required.
 
-## 📸 Screenshots
+---
 
-### Homepage
-![Homepage](screenshots/Homepage.png.png)
-![Homepage](screenshots/Homepage2.png.png)
+## 2. Create and Activate Virtual Environment (Windows)
 
+Open a terminal in the project root directory:
 
-### Prediction 
-![Prediction Result](screenshots/Prediction.png.png)
-![Prediction Result](screenshots/Prediction2.png.png)
-
-## Performance Analysis
-![Performance Analysis](screenshots/Performance.png.png)
-
-## Statistical Analysis
-![Statistical Analysis](screenshots/AnalysisChart.png.png)
-
-
-## ✨ Features
-
-- Detects phishing URLs using a trained Machine Learning model
-- Extracts important URL-based features for prediction
-- Provides real-time prediction through a web interface
-- Simple and user-friendly UI
-- Fast classification of URLs
-
-## 🛠 Tech Stack
-
-Frontend
-- HTML
-- CSS
-
-Backend
-- Python
-- Flask
-
-Machine Learning
-- Scikit-learn
-- NumPy
-- Pandas
-
-## 📈 Model Performance
-
-- Precision: **97%**
-- High accuracy in detecting malicious URLs
-
-## 📝 How It Works
-
-1. User enters a URL in the web interface.
-2. The system extracts important features from the URL.
-3. The trained machine learning model analyzes these features.
-4. The model predicts whether the URL is **Safe** or **Phishing**.
-5. The result is displayed instantly on the webpage.
-
-## ⚙️ Installation
-
-### 1️⃣ Clone the repository
-
-```bash
-git clone https://github.com/Aaditi-Patole/Phishing-URL-Detection-Website.git
+### Command Prompt (cmd.exe)
+```cmd
+python -m venv .venv
+.venv\Scripts\activate
 ```
 
-### 2️⃣ Navigate to the project directory
-
-```bash
-cd Phishing-URL-Detection-Website
+### Windows PowerShell
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
 ```
 
-### 3️⃣ Install required dependencies
+---
 
-```bash
+## 3. Install Dependencies
+
+Ensure your virtual environment is active, then upgrade `pip` and install project dependencies:
+
+```cmd
+python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-### 4️⃣ Run the application
+---
 
-```bash
+## 4. Configure Environment Variables
+
+Create your local `.env` configuration file from the provided template:
+
+### Command Prompt
+```cmd
+copy .env.example .env
+```
+
+### PowerShell
+```powershell
+Copy-Item .env.example .env
+```
+
+Open `.env` in a text editor and adjust values as needed:
+- `FLASK_SECRET_KEY`: A secure random string used for session cookies and CSRF protection.
+- `OTP_SECRET_SALT`: A secure random string used for hashing one-time passwords.
+- `DATABASE_PATH`: SQLite database file path (defaults to `phishing_app.db`).
+- `PORT`: Web server port (defaults to `5000`).
+
+---
+
+## 5. Configure SMTP Email Delivery (Gmail)
+
+To enable email OTP delivery for account registration and password resets:
+
+1. Enable **2-Step Verification** on your Google Account (`https://myaccount.google.com/security`).
+2. Generate an **App Password** under **Security > 2-Step Verification > App Passwords**.
+3. Update the email configuration section in `.env`:
+
+```env
+MAIL_SERVER=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USE_TLS=True
+MAIL_USERNAME=your_email@gmail.com
+MAIL_PASSWORD=your_16_character_app_password
+MAIL_DEFAULT_SENDER=your_email@gmail.com
+```
+
+*Note: If `MAIL_SERVER` or credentials are left unset, the application automatically runs in development fallback mode, outputting OTP codes to the terminal console so authentication remains functional during local testing.*
+
+---
+
+## 6. Initialize the Database
+
+The SQLite database is initialized automatically with required tables upon starting the application. 
+
+To initialize or verify the database schema manually before launching:
+
+```cmd
+python -c "import db; db.init_db(); print('Database initialized successfully.')"
+```
+
+---
+
+## 7. Run the Application
+
+Launch the Flask development server:
+
+```cmd
 python app.py
 ```
 
-### 5️⃣ Open the application in your browser
+---
 
+## 8. Open in Browser
+
+Navigate to the local URL in your web browser:
+
+```
+http://127.0.0.1:5000
+```
+or
 ```
 http://localhost:5000
 ```
 
+---
 
+## 9. Run Automated Tests
 
+Execute the automated test suites using the active virtual environment:
+
+### URL Feature Extraction and ML Model Pipeline Tests
+```cmd
+python -m unittest test_suite.py
+```
+
+### Authentication, OTP, and Security Rate-Limiting Tests
+```cmd
+python -m unittest test_auth_suite.py
+```
+
+### End-to-End Workflow Verification
+```cmd
+python e2e_verification.py
+```

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Phishing URL Detector</title>
+    <title>Login - PhisGuard</title>
     
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -117,7 +117,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 2rem;
+            padding: 2.5rem 1.5rem;
         }
 
         .login-container {
@@ -125,40 +125,48 @@
             border-radius: 20px;
             box-shadow: var(--shadow);
             width: 100%;
-            max-width: 400px;
+            max-width: 440px;
             padding: 2.5rem;
             text-align: center;
             transition: transform 0.3s;
         }
 
         .login-container:hover {
-            transform: translateY(-5px);
+            transform: translateY(-4px);
         }
 
         .login-container h2 {
             color: var(--dark);
             font-size: 2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .login-subtitle {
+            color: var(--gray);
+            font-size: 0.95rem;
             margin-bottom: 1.5rem;
         }
 
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.25rem;
             text-align: left;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.5rem;
             font-weight: 500;
+            font-size: 0.92rem;
             color: var(--dark);
         }
 
         .form-group input {
             width: 100%;
-            padding: 1rem;
+            padding: 0.85rem 1rem;
             border: 2px solid #e2e8f0;
             border-radius: 10px;
-            font-size: 1rem;
+            font-size: 0.95rem;
             transition: all 0.3s;
         }
 
@@ -168,9 +176,27 @@
             box-shadow: 0 0 0 3px rgba(58, 134, 255, 0.2);
         }
 
+        .form-row-extra {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: -0.5rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .form-row-extra a {
+            color: var(--primary);
+            font-size: 0.88rem;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .form-row-extra a:hover {
+            text-decoration: underline;
+        }
+
         .btn {
             width: 100%;
-            padding: 1rem;
+            padding: 0.95rem 1.2rem;
             background-color: var(--primary);
             color: var(--white);
             border: none;
@@ -182,24 +208,30 @@
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-
-        .btn i {
-            margin-right: 0.5rem;
+            gap: 0.5rem;
         }
 
         .btn:hover {
             background-color: var(--primary-dark);
-            transform: translateY(-3px);
+            transform: translateY(-2px);
         }
 
-        .flash-message {
-            margin-bottom: 1.5rem;
-            padding: 0.75rem;
-            border-radius: 10px;
-            background-color: var(--danger);
-            color: var(--white);
-            font-size: 0.9rem;
+        .auth-footer {
+            margin-top: 1.5rem;
+            padding-top: 1.25rem;
+            border-top: 1px solid #edf2f7;
+            font-size: 0.92rem;
+            color: var(--gray);
+        }
+
+        .auth-footer a {
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
         }
 
         /* Footer */
@@ -238,11 +270,7 @@
             }
             
             .login-container {
-                padding: 1.5rem;
-            }
-            
-            .login-container h2 {
-                font-size: 1.5rem;
+                padding: 1.75rem;
             }
         }
     </style>
@@ -252,17 +280,18 @@
     <nav class="navbar">
         <a href="{{url_for('first')}}" class="navbar-brand">
             <i class="fas fa-shield-alt"></i>
-            <h1>Phishing Detector</h1>
+            <h1>PhisGuard</h1>
         </a>
         <div class="nav-links" id="navLinks">
             <a href="{{url_for('first')}}" class="nav-link">Home</a>
-            {% if session.get('logged_in') %}
+            {% if session.get('user_id') or session.get('logged_in') %}
             <a href="{{url_for('index')}}" class="nav-link">Prediction</a>
             <a href="{{url_for('performance')}}" class="nav-link">Performance</a>
             <a href="{{url_for('chart')}}" class="nav-link">Chart</a>
             <a href="{{url_for('logout')}}" class="nav-link">Logout</a>
             {% else %}
             <a href="{{url_for('login')}}" class="nav-link active">Login</a>
+            <a href="{{url_for('signup')}}" class="nav-link">Sign Up</a>
             {% endif %}
         </div>
         <div class="mobile-menu" onclick="toggleMenu()">
@@ -273,26 +302,44 @@
     <!-- Main Content -->
     <div class="main-content">
         <div class="login-container">
-            <h2>Login</h2>
+            <h2>Welcome Back</h2>
+            <p class="login-subtitle">Sign in to your account to continue</p>
+
             {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                
+                {% for category, message in messages %}
+                <div style="padding: 0.75rem 1rem; margin-bottom: 1.25rem; border-radius: 8px; font-size: 0.9rem; font-weight: 500; text-align: left; {{ 'background: #fed7d7; color: #9b2c2c; border: 1px solid #feb2b2;' if category == 'danger' else 'background: #feebc8; color: #7b341e; border: 1px solid #fbd38d;' if category == 'warning' else 'background: #c6f6d5; color: #22543d; border: 1px solid #9ae6b4;' }}">
+                    {{ message }}
+                </div>
+                {% endfor %}
             {% endif %}
             {% endwith %}
             
             <form method="POST" action="{{ url_for('login') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
                 <div class="form-group">
-                    <label for="uname">Username</label>
-                    <input type="text" id="uname" name="uname" placeholder="Enter username" required>
+                    <label for="email"><i class="fas fa-envelope"></i> Email or Username</label>
+                    <input type="text" id="email" name="email" placeholder="you@example.com" value="{{ email|default('') }}" required autofocus>
                 </div>
+
                 <div class="form-group">
-                    <label for="pwd">Password</label>
-                    <input type="password" id="pwd" name="pwd" placeholder="Enter password" required>
+                    <label for="pwd"><i class="fas fa-lock"></i> Password</label>
+                    <input type="password" id="pwd" name="pwd" placeholder="Enter your password" required>
                 </div>
+
+                <div class="form-row-extra">
+                    <a href="{{ url_for('forgot_password') }}">Forgot Password?</a>
+                </div>
+
                 <button type="submit" class="btn">
                     <i class="fas fa-sign-in-alt"></i> Login
                 </button>
             </form>
+
+            <div class="auth-footer">
+                Don't have an account? <a href="{{ url_for('signup') }}">Sign Up here</a>
+            </div>
         </div>
     </div>
 

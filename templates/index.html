@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Phishing URL Detector</title>
+    <title>PhisGuard</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     
     <!-- Google Web Fonts -->
@@ -263,17 +263,18 @@
     <nav class="navbar">
         <a href="{{url_for('first')}}" class="navbar-brand">
             <i class="fas fa-shield-alt"></i>
-            <h1>Phishing Detector</h1>
+            <h1>PhisGuard</h1>
         </a>
         <div class="nav-links" id="navLinks">
             <a href="{{url_for('first')}}" class="nav-link">Home</a>
-            {% if session.get('logged_in') %}
+            {% if session.get('user_id') or session.get('logged_in') %}
             <a href="{{url_for('index')}}" class="nav-link active">Prediction</a>
             <a href="{{url_for('performance')}}" class="nav-link">Performance</a>
             <a href="{{url_for('chart')}}" class="nav-link">Chart</a>
             <a href="{{url_for('logout')}}" class="nav-link">Logout</a>
             {% else %}
             <a href="{{url_for('login')}}" class="nav-link">Login</a>
+            <a href="{{url_for('signup')}}" class="nav-link">Sign Up</a>
             {% endif %}
         </div>
         <div class="mobile-menu" onclick="toggleMenu()">
@@ -286,6 +287,16 @@
         <div class="url-checker">
             <h1>Check Suspicious URL</h1>
             <p>Enter a URL below to check if it's a potential phishing attempt</p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div style="padding: 0.75rem 1rem; margin-bottom: 1.25rem; border-radius: 8px; font-size: 0.9rem; font-weight: 500; text-align: left; {{ 'background: #fed7d7; color: #9b2c2c; border: 1px solid #feb2b2;' if category == 'danger' else 'background: #feebc8; color: #7b341e; border: 1px solid #fbd38d;' if category == 'warning' else 'background: #c6f6d5; color: #22543d; border: 1px solid #9ae6b4;' }}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
             
             <form action="/predict" method="post" class="url-form">
                 <label for="url">URL to check:</label>
